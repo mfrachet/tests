@@ -1,5 +1,12 @@
 An application that uses react-testing-library + msw and cypress (without the alpha integration testing).
 
+This application runs jest test **without mocks**, only by faking the API responses with MSW. It also contains:
+
+- Styled components
+- React intl
+- React router
+- React query
+
 ## Installation
 
 - Clone the repository
