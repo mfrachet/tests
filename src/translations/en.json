@@ -1,0 +1,7 @@
+{
+  "title": "Fetching a pokemon by its id",
+  "error": "Something went wrong during the request",
+  "loading": "Loading the pokemon...",
+  "formLabel": "Pokemon id",
+  "submit": "Submit"
+}
