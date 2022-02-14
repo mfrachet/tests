@@ -4,10 +4,10 @@ import { setupServer } from "msw/node";
 import { render } from "../../modules/testing";
 import Index from "../Index";
 
-const EndPointToMock = "https://pokeapi.co/api/v2/pokemon/*";
-
 const server = setupServer(
-  rest.get(EndPointToMock, (req, res, ctx) => res(ctx.json({ name: "bulbasaur" })))
+  rest.get("https://pokeapi.co/api/v2/pokemon/*", (req, res, ctx) =>
+    res(ctx.json({ name: "bulbasaur" }))
+  )
 );
 
 describe("Homepage", () => {
@@ -15,9 +15,12 @@ describe("Homepage", () => {
   afterEach(() => server.resetHandlers());
   afterAll(() => server.close());
 
-  it("shows a loading information and make sure to rely on aria-busy when pressing submit", async () => {
+  beforeEach(() => {
+    // eslint-disable-next-line testing-library/no-render-in-setup
     render(<Index />);
+  });
 
+  it("shows a loading information and make sure to rely on aria-busy when pressing submit", async () => {
     fireEvent.click(screen.getByText("Submit"));
 
     await waitFor(() => expect(screen.getByText("Loading the pokemon...")).toBeVisible());
@@ -25,9 +28,9 @@ describe("Homepage", () => {
   });
 
   it("shows an error message and focus it when something is going wrong", async () => {
-    server.use(rest.get(EndPointToMock, (req, res, ctx) => res(ctx.status(500))));
-
-    render(<Index />);
+    server.use(
+      rest.get("https://pokeapi.co/api/v2/pokemon/*", (req, res, ctx) => res(ctx.status(500)))
+    );
 
     fireEvent.change(screen.getByLabelText("Pokemon id"), { target: { value: "abcd" } });
     fireEvent.click(screen.getByText("Submit"));
@@ -40,8 +43,6 @@ describe("Homepage", () => {
   });
 
   it("shows the pokemon name", async () => {
-    render(<Index />);
-
     fireEvent.change(screen.getByLabelText("Pokemon id"), { target: { value: "1" } });
     fireEvent.click(screen.getByText("Submit"));
 
